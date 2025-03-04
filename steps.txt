@@ -1,0 +1,21 @@
+1. Установить Poetry
+Windows: (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
+Ubuntu: curl -sSL https://install.python-poetry.org | python3 -
+
+Добавить соответствующую директорию в PATH:
+# Linux, MacOS, WSL
+$HOME/.local/bin
+
+Создание проекта с нуля (из терминала): poetry new my-project
+Подключение Poetry к существующему проекту: poetry init
+
+Можно указать нужный интерпретатор для env:
+poetry env use python3.8  # Если python3.8 есть в PATH
+poetry env use /path/to/python  # Можно указать и полный путь
+
+По умолчанию, Poetry создает виртуальные окружения в папке {cache_dir}/virtualenvs.
+Если нужно в папке проекта, можно выполнить следующую команду: poetry config virtualenvs.in-project true
+
+2. Создать папку src и в ней проект django
+3. Создать файл .gitignore
+4. Создать Git репозиторий и сделать первый коммит
