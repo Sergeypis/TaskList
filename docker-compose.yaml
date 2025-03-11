@@ -1,0 +1,76 @@
+#version: '3.9'
+# Сервисы (контейнеры)
+services:
+  frontend:
+    image: sermalenk/skypro-front:lesson-38
+    container_name: frontend_container
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    networks:
+      - backend_nw
+
+  postgres:
+    image: postgres:latest  # Задает используемый образ Docker для Postgres
+    container_name: postgres_container
+    restart: always  # Всегда перезапускать контейнер при завершении
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres_db
+      PGDATA: /var/lib/postgresql/data
+    ports:  # Проброс порта Postgres из контейнера в хост
+      - "5430:5432"
+    networks:
+      - backend_nw
+    volumes:  # Создает том для хранения данных Postgres между перезапусками контейнера
+#      - pg_data_tasklist:/var/lib/postgresql/data
+      - ./pgdata_tasklist:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:  # Проверка состояния контейнера. Готовность к приему подключений
+      test: [ "CMD-SHELL", "pg_isready -U postgres_user -d postgres_db" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    tty: true
+    stdin_open: true
+  api:
+    container_name: api_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:  # Старт после базы
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - backend_nw
+
+# Определяет Docker том pg_data_tasklist, который будет использоваться для сохранения данных Postgres
+volumes:
+  pgdata_tasklist:
+    driver: local
+
+# Определяет сеть backend_nw с драйвером bridge. Это позволяет контейнерам в одной сети взаимодействовать друг с другом
+networks:
+  backend_nw:
+    driver: bridge
+
+# "docker-compose build", создание образов в контейнерах без их запуска
+# "docker-compose up", создание и запуск контейнеров
+# "docker-compose logs -f", просмотр потока логов в реальном времени
