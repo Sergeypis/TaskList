@@ -30,6 +30,7 @@ poetry env use /path/to/python  # Можно указать и полный пу
 12. Создать файл docker-compose.yaml с сервисом БД
 13. Создать docker-образ приложения, docker-файл
 14. Создать файл docker-compose.yaml с сервисами приложения
+15. Установит DRF и social-auth-app-django
 
 
 
