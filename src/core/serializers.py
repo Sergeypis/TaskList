@@ -27,7 +27,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "first_name", "last_name", "email", "password", "password_repeat")
 
     def validate(self, attrs: dict):
-        """Метода для проверки совпадения пароля и его повторного ввода"""
+        """Метод для проверки совпадения пароля и его повторного ввода"""
 
         if attrs["password"] != attrs["password_repeat"]:
             raise ValidationError("Password must match")

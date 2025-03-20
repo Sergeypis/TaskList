@@ -22,7 +22,7 @@ services:
       POSTGRES_DB: postgres_db
       PGDATA: /var/lib/postgresql/data
     ports:  # Проброс порта Postgres из контейнера в хост
-      - "5430:5432"
+      - "5432:5432"
     networks:
       - backend_nw
     volumes:  # Создает том для хранения данных Postgres между перезапусками контейнера
